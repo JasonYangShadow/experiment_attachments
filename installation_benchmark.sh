@@ -66,7 +66,7 @@ t_udocker(){
 }
 
 t_bare(){
-	`$com`
+	sudo /bin/bash -c "$com"
 }
 
 t_lpmx
