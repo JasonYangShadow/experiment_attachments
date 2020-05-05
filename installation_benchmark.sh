@@ -1,5 +1,5 @@
 #!/bin/bash
-com="apt update && time apt install -y --no-install-recommends build-essential gcc clang python3 vim-gtk nodejs r-base libboost-all-dev"
+com="apt update && time apt install -y --no-install-recommends build-essential gcc clang python3 vim-gtk nodejs libboost-all-dev ruby"
 
 exists(){
 	if [ -x "$(command -v $1)" ];then
@@ -19,7 +19,7 @@ t_docker(){
 			sudo docker rm $(sudo docker ps -aq)
 		fi
 
-		sudo docker run -it --rm ubuntu:16.04 /bin/bash -c "$com" | tee -a "docker.log"
+		sudo docker run -it --rm ubuntu:16.04 /bin/bash -c "$com"
 	fi
 }
 
@@ -27,8 +27,8 @@ t_lpmx(){
 	if exists Linux-x86_64-lpmx;then
 		echo "LPMX exists, let me run experiments on LPMX"
 
-		Linux-x86_64-lpmx docker fastrun ubuntu:16.04 "$com" | tee -a "lpmx.log"
-		Linux-x86_64-lpmx docker fastrun ubuntu:16.04-merge "$com" | tee -a "lpmx.merge.log"
+		Linux-x86_64-lpmx docker fastrun ubuntu:16.04 "$com"
+		Linux-x86_64-lpmx docker fastrun ubuntu:16.04-merge "$com"
 	fi
 }
 
@@ -41,7 +41,7 @@ t_singularity(){
 		fi
 		
 		sudo singularity build --sandbox ubuntu1604 library://ubuntu:16.04
-		sudo singularity shell --writable ubuntu1604/ "$com" | tee -a "singularity.log"
+		sudo singularity exec --writable ubuntu1604/ /bin/bash -c "$com"
 		sudo rm -rf ubuntu1604
 	fi
 }
@@ -50,7 +50,7 @@ t_podman(){
 	if exists podman;then
 		echo "podman exists, let me run experiments on Podman"
 
-		podman run -it --rm ubuntu:16.04 /bin/bash -c "$com" | tee -a "podman.log"
+		podman run -it --rm --network=host docker.io/ubuntu:16.04 /bin/bash -c "$com"
 	fi
 }
 
@@ -58,20 +58,20 @@ t_udocker(){
 	if exists udocker;then
 		echo "udocker exists, let me run experiments on uDocker"
 
-		id="$(udocker create ubuntu:16.04)"
-		udocker setup --execmode=F4 "$id"
-		udocker run "$id" /bin/bash -c "$com" | tee "udocker.log"
+		id="$(udocker create docker.io/ubuntu:16.04)"
+		udocker setup --execmode=P2 "$id"
+		udocker run "$id" /bin/bash -c "$com"
 		udocker rm "$id"
 	fi
 }
 
 t_bare(){
-	`$com` | tee "bare.log"
+	`$com`
 }
 
+t_lpmx
 t_docker
 t_podman
-t_lpmx
 t_singularity
 t_udocker
 t_bare
