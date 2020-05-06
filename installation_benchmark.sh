@@ -1,7 +1,7 @@
 #!/bin/bash
 coms[0]="apt update && time apt install -y --no-install-recommends clang default-jre"
-coms[1]="apt update && apt install -y --no-install-recommends wget && wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && time sh ~/miniconda.sh -b -p ~/miniconda"
-coms[2]="apt update && time apt install -y --no-install-recommends git ca-certificates autoconf automake make gcc perl zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev && cd ~ && git clone https://github.com/samtools/htslib.git && cd htslib &&autoconf && ./configure && time make && make install && cd .. & git clone https://github.com/samtools/samtools.git && cd samtools && autoconf -Wno-syntax && ./configure && time make"
+coms[1]="apt update && apt install -y --no-install-recommends wget && wget --no-check-certificate https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && time sh ~/miniconda.sh -b -p ~/miniconda"
+coms[2]="apt update && apt install -y --no-install-recommends git ca-certificates autoconf automake make gcc perl zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev && cd ~ && git clone https://github.com/samtools/htslib.git && cd htslib && autoheader && autoconf && ./configure && time make && make install && cd ~ && git clone https://github.com/samtools/samtools.git && cd samtools && autoconf -Wno-syntax && ./configure && time make"
 
 exists(){
 	if [ -x "$(command -v $1)" ];then
