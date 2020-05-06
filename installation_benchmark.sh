@@ -1,5 +1,7 @@
 #!/bin/bash
-com="apt update && time apt install -y --no-install-recommends build-essential gcc clang python3 vim-gtk nodejs libboost-all-dev ruby"
+coms[0]="apt update && time apt install -y --no-install-recommends clang default-jre"
+coms[1]="apt update && apt install -y --no-install-recommends wget && wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && time sh ~/miniconda.sh -b -p ~/miniconda"
+coms[2]="apt update && time apt install -y --no-install-recommends git ca-certificates autoconf automake make gcc perl zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev && cd ~ && git clone https://github.com/samtools/htslib.git && cd htslib &&autoconf && ./configure && time make && make install && cd .. & git clone https://github.com/samtools/samtools.git && cd samtools && autoconf -Wno-syntax && ./configure && time make"
 
 exists(){
 	if [ -x "$(command -v $1)" ];then
@@ -19,7 +21,7 @@ t_docker(){
 			sudo docker rm $(sudo docker ps -aq)
 		fi
 
-		sudo docker run -it --rm ubuntu:16.04 /bin/bash -c "$com"
+		sudo docker run -it --rm ubuntu:16.04 /bin/bash -c "$1"
 	fi
 }
 
@@ -27,8 +29,8 @@ t_lpmx(){
 	if exists Linux-x86_64-lpmx;then
 		echo "LPMX exists, let me run experiments on LPMX"
 
-		Linux-x86_64-lpmx docker fastrun ubuntu:16.04 "$com"
-		Linux-x86_64-lpmx docker fastrun ubuntu:16.04-merge "$com"
+		Linux-x86_64-lpmx docker fastrun ubuntu:16.04 "$1"
+		Linux-x86_64-lpmx docker fastrun ubuntu:16.04-merge "$1"
 	fi
 }
 
@@ -41,7 +43,7 @@ t_singularity(){
 		fi
 		
 		sudo singularity build --sandbox ubuntu1604 library://ubuntu:16.04
-		sudo singularity exec --writable ubuntu1604/ /bin/bash -c "$com"
+		sudo singularity exec --writable ubuntu1604/ /bin/bash -c "$1"
 		sudo rm -rf ubuntu1604
 	fi
 }
@@ -50,7 +52,7 @@ t_podman(){
 	if exists podman;then
 		echo "podman exists, let me run experiments on Podman"
 
-		podman run -it --rm --network=host docker.io/ubuntu:16.04 /bin/bash -c "$com"
+		podman run -it --rm --network=host docker.io/ubuntu:16.04 /bin/bash -c "$1"
 	fi
 }
 
@@ -60,18 +62,26 @@ t_udocker(){
 
 		id="$(udocker create docker.io/ubuntu:16.04)"
 		udocker setup --execmode=P2 "$id"
-		udocker run "$id" /bin/bash -c "$com"
+		udocker run "$id" /bin/bash -c "$1"
 		udocker rm "$id"
 	fi
 }
 
 t_bare(){
-	sudo /bin/bash -c "$com"
+	sudo /bin/bash -c "$1"
 }
 
-t_lpmx
-t_docker
-t_podman
-t_singularity
-t_udocker
-t_bare
+for com in "${coms[@]}";do
+	echo "start executing command: $com"
+	t_lpmx "$com" | tee -a "lpmx.log"
+	read -p "Press any key to continue"
+	t_docker "$com" | tee -a "docker.log"
+	read -p "Press any key to continue"
+	t_podman "$com" | tee -a "podman.log"
+	read -p "Press any key to continue"
+	t_singularity "$com" | tee -a "singularity.log"
+	read -p "Press any key to continue"
+	t_udocker "$com" | tee -a "udocker.log"
+	read -p "Press any key to continue"
+	t_bare "$com" | tee -a "bare.log"
+done
