@@ -2,6 +2,7 @@
 import ast
 import os
 import subprocess
+import re
 exp_url="https://github.com/JasonYangShadow/experiment_attachments.git"
 match_file = "match.log"
 non_match_file = "nomatch.log"
@@ -9,12 +10,14 @@ output_file = "report.log"
 program = 'Linux-x86_64-lpmx'
 
 def run_commands(command):
+    print('running command: %s\n' % command)
     output = os.popen(command).read()
     return output
 
 def shell_commands(command):
-    cp = subprocess.run([command], shell=True)
-    return cp['returncode']
+    print('running command: %s\n' % command)
+    cp = subprocess.run([command], shell=True, stderr=subprocess.PIPE)
+    return cp
 
 def exist(name):
     path = run_commands("command -v %s" % name)
@@ -22,36 +25,62 @@ def exist(name):
         raise Exception("%s does not exist" % name)
 
 def test_match(dic):
-    if not isinstance(dict, dic):
-        raise Exception('%s should be the type of dict' % dic)
     image_download = '%s docker download %s' %(program, dic['name'])
     image_delete = '%s docker delete -p %s' %(program, dic['name'])
     imports = ''
     commands = ''
     if 'imports' in dic:
         imports = 'import ' + ' '.join(dic['imports'])
+        imports = 'python3 -c "%s"'% imports
     if 'commands' in dic:
         commands = ' && '.join(dic['commands'])
-    image_run = '%s docker fastrun %s "PATH=/opt/conda/bin:$PATH %s %s"' %(program, dic['name'], imports, commands)
+    image_run = '%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda %s && %s"' %(program, dic['name'], imports, commands)
     #start
-    print(run_commands(image_download))
+    run_commands(image_download)
 
     #test and run
-    ret = shell_commands(image_run)
+    cp = shell_commands(image_run)
 
     #cleanup
-    print(run_commands(image_delete))
+    run_commands(image_delete)
 
-    if ret == 0:
-        return True, ''
-    else:
-        reason = input('reason? \n')
-        return False, reason
-    
+    return cp, image_run
+
+def test_nonmatch(dic):
+    image_download = '%s docker download %s' %(program, dic['name'])
+    image_delete = '%s docker delete -p %s' %(program, dic['name'])
+    commands = dic['commands']
+
+    def apt(commands):
+        for command in commands:
+            matches = re.search(r"\(apt-get install -t buster-backports -y (\S+) \|\| apt-get install -y (\S+)\)", command)
+            if matches:
+                if matches.group(1) == matches.group(2):
+                    return True, matches.group(1)
+            matches = re.search(r"apt-get install -y (\S+)", command)
+            if matches:
+                return True, matches.group(1)
+        return False, ''
+
+    succ, app = apt(commands)
+    image_run = '%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda %s --help"' %(program, dic['name'], app)
+    if not succ:
+        return None, image_run
+
+    #start
+    run_commands(image_download)
+
+    #test and ru
+    cp = shell_commands(image_run)
+
+    #cleanup
+    run_commands(image_delete)
+
+    return cp, image_run
 
 def main():
     exist('git')
-    #exist('Linux-x86_64-lpmx')
+    exist('Linux-x86_64-lpmx')
     cwd=run_commands("pwd").strip()
     expdir = cwd + "/experiment_attachments"
     if not os.path.exists(expdir):
@@ -60,13 +89,56 @@ def main():
     if not os.path.exists('%s/%s' %(expdir, match_file)) or not os.path.exists('%s/%s' %(expdir, non_match_file)):
         raise Exception('match.log or nomatch.log does not exist')
 
-    with open('%s/%s' %(expdir, match_file)) as m, open('%s/%s' %(expdir, non_match_file)) as n, open('%s' % output_file,'a') as o:
+    processed = []
+    if os.path.exists('%s' % output_file):
+        with open('%s' % output_file) as o:
+        #find processed info
+            print('starts loading completed records...\n')
+            for line in o.readlines():
+                dic = ast.literal_eval(line.strip())
+                processed.append(dic['name'])
+            print('finished loading records, the number is: %d\n' % len(processed))
+
+    with open('%s/%s' %(expdir, match_file)) as m, open('%s/%s' %(expdir, non_match_file)) as n, open('%s' % output_file, 'a') as o:
         #here we opened match_file and non_match_file
-        
         #process matched result firstly
         for line in m.readlines():
-            dic = ast.literal_eval(line)
-            #download image
+            dic = ast.literal_eval(line.strip())
+            if dic['name'] in processed:
+                continue
+            print('starts processing matched image %s\n' %dic['name'])
+            ret, command = test_match(dic)
+            data = {}
+            data['name'] = dic['name']
+            data['command'] = command
+            if not ret.stderr:
+                data['succ'] = True
+                data['msg'] =''
+            else:
+                data['succ'] = False
+                data['msg'] = str(ret.stderr)
+            o.write('%s\n' % data)
+
+        #process nomatched result secondly
+        for line in n.readlines():
+            dic = ast.literal_eval(line.strip())
+            if dic['name'] in processed:
+                continue
+            print('starts procesing non-matched image %s\n' %dic['name'])
+            ret,command = test_nonmatch(dic)
+            data = {}
+            data['name'] = dic['name']
+            data['command'] = command
+            if ret and not ret.stderr:
+                data['succ'] = True
+                data['msg'] = ''
+            else:
+                data['succ'] = False
+                if ret and ret.stderr:
+                    data['msg'] = str(ret.stderr)
+                else:
+                    data['msg'] = ''
+            o.write('%s\n' %data)
 
 if __name__=="__main__":
     main()
