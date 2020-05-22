@@ -118,6 +118,7 @@ def main():
                 data['succ'] = False
                 data['msg'] = str(ret.stderr)
             o.write('%s\n' % data)
+            o.flush()
 
         #process nomatched result secondly
         for line in n.readlines():
@@ -139,6 +140,7 @@ def main():
                 else:
                     data['msg'] = ''
             o.write('%s\n' %data)
+            o.flush()
 
 if __name__=="__main__":
     main()
