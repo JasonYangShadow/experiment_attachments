@@ -31,7 +31,7 @@ def test_match(dic):
     commands = ''
     if 'imports' in dic:
         imports = 'import ' + ' '.join(dic['imports'])
-        imports = "python3 -c '%s'"% imports
+        imports = "python -c '%s'"% imports
     if 'commands' in dic:
         commands = ' && '.join(dic['commands'])
     image_run = '%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda %s && %s"' %(program, dic['name'], imports, commands)
@@ -63,7 +63,7 @@ def test_nonmatch(dic):
         return False, ''
 
     succ, app = apt(commands)
-    image_run = '%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda %s --help"' %(program, dic['name'], app)
+    image_run = '%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda %s --help 2>&1"' %(program, dic['name'], app)
     if not succ:
         return None, image_run
 
