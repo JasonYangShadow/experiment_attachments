@@ -223,7 +223,7 @@
 {'commands': ['PhyloCSF 12flies $PREFIX/bin/tal-AA.fa'], 'name': 'biocontainers/phylocsf:vlatest_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/phylocsf'}
 {'commands': ['snpEff -version'], 'name': 'biocontainers/snpeff:v4.1k_cv3', 'recipe': '/vagrant/bioconda-recipes/recipes/snpeff'}
 {'imports': ['nmrpro'], 'name': 'biocontainers/nmrpro:latest', 'recipe': '/vagrant/bioconda-recipes/recipes/nmrpro'}
-{'commands': ['makeblastdb -help', 'magicblast -help', 'echo KF278469.1 >subject.txt', 'magicblast -sra SRR000001 -subject subject.txt -no_unaligned >/dev/null'], 'name': 'biocontainers/magicblast:v1.3.0_cv5', 'recipe': '/vagrant/bioconda-recipes/recipes/magicblast'}
+{'commands': ['makeblastdb -help', 'magicblast -help'], 'name': 'biocontainers/magicblast:v1.3.0_cv5', 'recipe': '/vagrant/bioconda-recipes/recipes/magicblast'}
 {'commands': ['pepnovo -h 2>&1 | grep PepNovo'], 'name': 'biocontainers/pepnovo:v20120423_cv3', 'recipe': '/vagrant/bioconda-recipes/recipes/pepnovo'}
 {'commands': ['danpos.py -h'], 'name': 'biocontainers/danpos:v2.2.2_cv3', 'recipe': '/vagrant/bioconda-recipes/recipes/danpos'}
 {'commands': ['zorro'], 'name': 'biocontainers/zorro:v1.0.0_cv2', 'recipe': '/vagrant/bioconda-recipes/recipes/zorro'}
