@@ -58,7 +58,7 @@
 {'imports': ['cogent', 'cogent.align', 'cogent.align.weights', 'cogent.app', 'cogent.cluster', 'cogent.core', 'cogent.data', 'cogent.evolve', 'cogent.format', 'cogent.maths', 'cogent.maths.matrix', 'cogent.maths.spatial', 'cogent.maths.stats', 'cogent.maths.stats.cai', 'cogent.maths.unifrac', 'cogent.motif', 'cogent.parse', 'cogent.phylo', 'cogent.recalculation', 'cogent.seqsim', 'cogent.struct', 'cogent.util', 'cogent.db.ensembl'], 'name': 'biocontainers/cogent:v1.9-14-deb-py2_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/cogent'}
 {'commands': ['clustalw2', 'clustalw'], 'name': 'biocontainers/clustalw:v2.1lgpl-6-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/clustalw'}
 {'commands': ['binlinks -help 2>&1 | grep Usage', 'bundlelinks -help 2>&1 | grep Usage', 'calcdatarange -help 2>&1 | grep Usage', 'parse-category -help 2>&1 | grep Usage', 'clustal2link -help 2>&1 | grep Usage', 'colorinterpolate -help 2>&1 | grep Usage', 'convertlinks -help 2>&1 | grep Usage', 'filterlinks -help 2>&1 | grep Usage', 'orderchr -help 2>&1 | grep Usage', 'randomdata -help 2>&1 | grep Usage', 'randomlinks -help 2>&1 | grep Usage', 'resample -help 2>&1 | grep Usage', 'make-conf -help 2>&1 | grep Usage', 'make-table -help 2>&1 | grep Usage', 'parse-table -help 2>&1 | grep Usage'], 'name': 'biocontainers/circos-tools:v0.23-1-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/circos-tools'}
-{'commands': ['codonw --help'], 'name': 'biocontainers/codonw:v1.4.4-4-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/codonw'}
+{'commands': ['which codonw'], 'name': 'biocontainers/codonw:v1.4.4-4-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/codonw'}
 {'commands': ['ClonalFrameML 2>&1 | grep ClonalFrameML'], 'name': 'biocontainers/clonalframeml:v1.11-3-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/clonalframeml'}
 {'commands': ['ChromHMM.sh -Xmx512M BinarizeBam | grep -q usage'], 'name': 'biocontainers/chromhmm:v1.18dfsg-1-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/chromhmm'}
 {'commands': ['clearcut -V'], 'name': 'biocontainers/clearcut:v1.0.9-3-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/clearcut'}
@@ -114,7 +114,7 @@
 {'commands': ['seqtk 2>&1 | grep seqtk -q'], 'name': 'biocontainers/seqtk:v1.3-1-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/seqtk'}
 {'commands': ['miniasm -V'], 'name': 'biocontainers/miniasm:v0.3dfsg-1-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/miniasm'}
 {'commands': ['minia -help'], 'name': 'biocontainers/minia:v1.6906-2-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/minia'}
-{'commands': ['mothur', 'uchime --version'], 'name': 'biocontainers/mothur:v1.41.21-1-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/mothur'}
+{'commands': ['which mothur', 'uchime --version'], 'name': 'biocontainers/mothur:v1.41.21-1-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/mothur'}
 {'commands': ['minimap -V  > /dev/null'], 'name': 'biocontainers/minimap:v0.2-4-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/minimap'}
 {'commands': ['muscle -version'], 'name': 'biocontainers/muscle:v1-3.8.1551-2-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/muscle'}
 {'commands': ['pilon --help', 'pilon --jar_dir'], 'name': 'biocontainers/pilon:v1.23dfsg-1-deb_cv1', 'recipe': '/vagrant/bioconda-recipes/recipes/pilon'}
@@ -215,7 +215,7 @@
 {'commands': ['velvetg | grep velvetg > /dev/null', 'velveth | grep velveth > /dev/null'], 'name': 'biocontainers/velvet:v1.2.10_cv3', 'recipe': '/vagrant/bioconda-recipes/recipes/velvet'}
 {'commands': ['configureStrelkaGermlineWorkflow.py -h', 'configureStrelkaSomaticWorkflow.py -h'], 'name': 'biocontainers/strelka:v2.9.7_cv2', 'recipe': '/vagrant/bioconda-recipes/recipes/strelka'}
 {'commands': ['tophat --version'], 'name': 'biocontainers/tophat:v2.1.1_cv3', 'recipe': '/vagrant/bioconda-recipes/recipes/tophat'}
-{'commands': ['otool -L $PREFIX/bin/bgzip | grep deflate', 'ldd $PREFIX/bin/bgzip | grep deflate', 'test -e test1.bed || printf 'chr1\\\\t100\\\\t200\\\\n\' > test1.bed', 'bgzip test1.bed', 'tabix test1.bed.gz', 'htsfile test1.bed.gz'], 'name': 'biocontainers/htslib:v1.2.1_cv3', 'recipe': '/vagrant/bioconda-recipes/recipes/htslib'}
+{'commands': ['otool -L $PREFIX/bin/bgzip | grep deflate', 'ldd $PREFIX/bin/bgzip | grep deflate', 'which bgzip', 'which tabix', 'which htsfile'], 'name': 'biocontainers/htslib:v1.2.1_cv3', 'recipe': '/vagrant/bioconda-recipes/recipes/htslib'}
 {'imports': ['mzml2isa'], 'name': 'biocontainers/mzml2isa:phenomenal-v0.4.28_cv0.3.26', 'recipe': '/vagrant/bioconda-recipes/recipes/mzml2isa'}
 {'commands': ['efetch --help', 'epost --help', 'efilter --help', 'eproxy --help', 'einfo --help', 'esearch --help', 'econtact --help', 'elink --help', 'espell --help', 'enotify --help', 'esummary --help', 'entrez-phrase-search --help', 'xtract -version'], 'name': 'biocontainers/entrez-direct:v7.50.20171103_cv5', 'recipe': '/vagrant/bioconda-recipes/recipes/entrez-direct'}
 {'commands': ['Corrector_AR -h'], 'name': 'biocontainers/soapec:v2.03_cv3', 'recipe': '/vagrant/bioconda-recipes/recipes/soapec'}
