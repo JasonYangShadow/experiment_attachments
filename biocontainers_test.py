@@ -35,6 +35,8 @@ def test_match(dic):
     if 'commands' in dic:
         commands = ' && '.join(dic['commands'])
     image_run = '%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda %s && %s"' %(program, dic['name'], imports, commands)
+    if image_run.strip().endswith('&&'):
+        image_run = image_run.strip()[:-2]
     #start
     run_commands(image_download)
 
@@ -64,7 +66,7 @@ def test_nonmatch(dic):
 
     succ, app = apt(commands)
     image_run = '%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda %s --help 2>&1"' %(program, dic['name'], app)
-    if not succ:
+    if not succ or not app:
         return None, image_run
 
     #start
