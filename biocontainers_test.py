@@ -34,9 +34,11 @@ def test_match(dic):
         imports = "python -c '%s'"% imports
     if 'commands' in dic:
         commands = ' && '.join(dic['commands'])
-    image_run = '%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda %s && %s"' %(program, dic['name'], imports, commands)
-    if image_run.strip().endswith('&&'):
-        image_run = image_run.strip()[:-2]
+    image_run = ''
+    if not commands and imports:
+        image_run = '%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda %s"' %(program, dic['name'], imports)
+    if commands:
+        image_run = '%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda %s && %s"' %(program, dic['name'], imports, commands)
     #start
     run_commands(image_download)
 
