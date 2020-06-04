@@ -67,7 +67,7 @@ def test_nonmatch(dic):
         return False, ''
 
     succ, app = apt(commands)
-    image_run = '%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda %s --help"' %(program, dic['name'], app)
+    image_run = '''%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda a=whereis %s awk '{print $2}' && eval "$a --help""''' %(program, dic['name'], app)
     if not succ or not app:
         return None, image_run
 
@@ -100,15 +100,24 @@ def main():
             print('starts loading completed records...\n')
             for line in o.readlines():
                 dic = ast.literal_eval(line.strip())
-                processed.append(dic['name'])
+                processed.append(dic)
             print('finished loading records, the number is: %d\n' % len(processed))
 
-    with open('%s/%s' %(expdir, match_file)) as m, open('%s/%s' %(expdir, non_match_file)) as n, open('%s' % output_file, 'a') as o:
+    with open('%s/%s' %(expdir, match_file)) as m, open('%s/%s' %(expdir, non_match_file)) as n, open('%s' % output_file, 'w') as o:
         #here we opened match_file and non_match_file
         #process matched result firstly
+
+        #here need to write previous successful records to file again, as we will overwrite or erase existing records
+        processed_names = []
+        for record in processed:
+            if record['succ']:
+                o.write('%s\n' % record)
+                o.flush()
+                processed_names.append(record['name'])
+
         for line in m.readlines():
             dic = ast.literal_eval(line.strip())
-            if dic['name'] in processed:
+            if dic['name'] in processed_name:
                 continue
             print('starts processing matched image %s\n' %dic['name'])
             ret, command = test_match(dic)
@@ -121,13 +130,14 @@ def main():
             else:
                 data['succ'] = False
                 data['msg'] = str(ret.stderr)
+            data['type'] = 'match'
             o.write('%s\n' % data)
             o.flush()
 
         #process nomatched result secondly
         for line in n.readlines():
             dic = ast.literal_eval(line.strip())
-            if dic['name'] in processed:
+            if dic['name'] in processed_name:
                 continue
             print('starts procesing non-matched image %s\n' %dic['name'])
             ret,command = test_nonmatch(dic)
@@ -143,6 +153,7 @@ def main():
                     data['msg'] = str(ret.stderr)
                 else:
                     data['msg'] = ''
+            data['type'] = 'nomatch'
             o.write('%s\n' %data)
             o.flush()
 
