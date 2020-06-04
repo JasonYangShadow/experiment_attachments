@@ -117,7 +117,7 @@ def main():
 
         for line in m.readlines():
             dic = ast.literal_eval(line.strip())
-            if dic['name'] in processed_name:
+            if dic['name'] in processed_names:
                 continue
             print('starts processing matched image %s\n' %dic['name'])
             ret, command = test_match(dic)
@@ -137,7 +137,7 @@ def main():
         #process nomatched result secondly
         for line in n.readlines():
             dic = ast.literal_eval(line.strip())
-            if dic['name'] in processed_name:
+            if dic['name'] in processed_names:
                 continue
             print('starts procesing non-matched image %s\n' %dic['name'])
             ret,command = test_nonmatch(dic)
