@@ -3,6 +3,7 @@ import ast
 import os
 import subprocess
 import re
+import argparse
 exp_url="https://github.com/JasonYangShadow/experiment_attachments.git"
 match_file = "match.log"
 non_match_file = "nomatch.log"
@@ -82,7 +83,7 @@ def test_nonmatch(dic):
 
     return cp, image_run
 
-def main():
+def main(restart):
     exist('git')
     exist('Linux-x86_64-lpmx')
     cwd=run_commands("pwd").strip()
@@ -110,7 +111,12 @@ def main():
         #here need to write previous successful records to file again, as we will overwrite or erase existing records
         processed_names = []
         for record in processed:
-            if record['succ']:
+            if restart:
+                if record['succ']:
+                    o.write('%s\n' % record)
+                    o.flush()
+                    processed_names.append(record['name'])
+            else:
                 o.write('%s\n' % record)
                 o.flush()
                 processed_names.append(record['name'])
@@ -158,4 +164,7 @@ def main():
             o.flush()
 
 if __name__=="__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-r','--restart', default=False, action='store_true')
+    args = parser.parse_args()
+    main(vars(args)['restart'])
