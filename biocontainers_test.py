@@ -67,7 +67,7 @@ def test_nonmatch(dic):
         return False, ''
 
     succ, app = apt(commands)
-    image_run = '''%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda a=whereis %s awk '{print $2}' && eval "$a --help""''' %(program, dic['name'], app)
+    image_run = '''%s docker fastrun %s "PATH=/opt/conda/bin:/home/biodocker/bin:$PATH PREFIX=/opt/conda a=whereis %s | awk '{print $2}' && eval '$a --help'"''' %(program, dic['name'], app)
     if not succ or not app:
         return None, image_run
 
