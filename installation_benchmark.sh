@@ -1,7 +1,7 @@
 #!/bin/bash
 coms[0]="apt update && time apt install -y --no-install-recommends clang default-jre"
 coms[1]="apt update && apt install -y --no-install-recommends wget && wget --no-check-certificate https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && time sh ~/miniconda.sh -b -p ~/miniconda"
-coms[2]="apt update && apt install -y --no-install-recommends git ca-certificates autoconf automake make gcc perl zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev && cd ~ && git clone https://github.com/samtools/htslib.git && cd htslib && autoheader && autoconf && ./configure && time make && make install && cd ~ && git clone https://github.com/samtools/samtools.git && cd samtools && autoconf -Wno-syntax && ./configure && time make"
+coms[2]="apt update && apt install -y --no-install-recommends git ca-certificates autoconf automake make gcc perl zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev && cd ~ && git clone https://github.com/samtools/htslib.git && cd htslib && autoheader && autoconf && ./configure && time make && make install && cd ~ && git clone https://github.com/samtools/samtools.git && cd samtools && autoheader && autoconf -Wno-syntax && ./configure && time make"
 
 exists(){
 	if [ -x "$(command -v $1)" ];then
@@ -15,6 +15,7 @@ t_docker(){
 	if exists docker; then
 		#list existing containers
 		echo "Docker exists, let me run experiments on Docker"
+		sudo docker version
 		#remove previous conatiners
 		containers="$(sudo docker ps -aq)"
 		if [ ! -z "$containers" ];then
@@ -28,8 +29,10 @@ t_docker(){
 t_lpmx(){
 	if exists Linux-x86_64-lpmx;then
 		echo "LPMX exists, let me run experiments on LPMX"
-
+		Linux-x86_64-lpmx version	
+		echo "**************** I am testing installing software on 5 layers(Docker Image)***************************"
 		Linux-x86_64-lpmx docker fastrun ubuntu:16.04 "$1"
+		echo "**************** I am testing installing software on 2 layers(Merged Image)***************************"
 		Linux-x86_64-lpmx docker fastrun ubuntu:16.04-merge "$1"
 	fi
 }
@@ -41,7 +44,7 @@ t_singularity(){
 		if [ -d ubuntu1604 ];then
 			sudo rm -rf ubuntu1604
 		fi
-		
+		singularity version	
 		sudo singularity build --sandbox ubuntu1604 library://ubuntu:16.04
 		sudo singularity exec --writable ubuntu1604/ /bin/bash -c "$1"
 		sudo rm -rf ubuntu1604
@@ -51,7 +54,7 @@ t_singularity(){
 t_podman(){
 	if exists podman;then
 		echo "podman exists, let me run experiments on Podman"
-
+		podman version
 		podman run -it --rm --network=host docker.io/ubuntu:16.04 /bin/bash -c "$1"
 	fi
 }
@@ -59,7 +62,7 @@ t_podman(){
 t_udocker(){
 	if exists udocker;then
 		echo "udocker exists, let me run experiments on uDocker"
-
+		udocker version
 		id="$(udocker create docker.io/ubuntu:16.04)"
 		udocker setup --execmode=P2 "$id"
 		udocker run "$id" /bin/bash -c "$1"
