@@ -25,5 +25,5 @@ cd ~ && ./installation_benchmark.sh
 
 ![result](experiment_data.png)
 
-Performance.R is used for drawing the data read from xls file.
+rainbow.R is used for drawing rainbow figure based on the data read from xls file.
 ![performance](performance.png)
