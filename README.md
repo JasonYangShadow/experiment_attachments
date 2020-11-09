@@ -25,5 +25,4 @@ cd ~ && ./installation_benchmark.sh
 
 ![result](experiment_data.png)
 
-rainbow.R is used for drawing rainbow figure based on the data read from xls file.
 ![performance](performance.png)
