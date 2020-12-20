@@ -69,10 +69,6 @@ t_udocker(){
 	fi
 }
 
-t_bare(){
-	sudo /bin/bash -c "$1"
-}
-
 for com in "${coms[@]}";do
 	echo "start executing command: $com"
 	t_lpmx "$com" | tee -a "lpmx.log"
@@ -84,6 +80,4 @@ for com in "${coms[@]}";do
 	t_singularity "$com" | tee -a "singularity.log"
 	read -p "Press any key to continue"
 	t_udocker "$com" | tee -a "udocker.log"
-	read -p "Press any key to continue"
-	t_bare "$com" | tee -a "bare.log"
 done
