@@ -46,7 +46,15 @@ cd ~ && ./container_creation_benchmark.sh
 Also for a python script named `image_convertion_benchmark.py`, it is used for Docker image convertion benchmark test for Singularity and LPMX. It is also included inside the exported box.
 
 ## Scripts inside sv folder
-The scripts included inside the sv folder is the GATK SV call executed on HPC (shirokane supercomputer), these scripts could not directly run in your environment, but they can help you reproduce these experiments to some extends. The script named `hg002_generate_data.py` will help generate and download necessary HG002 reads and this data can be used for further analysis shown in sv scripts folder. LPMX and bare host use different commands to launch the analysis tools, so please be careful on the paths of data.
+The scripts included inside the sv folder is the GATK SV call executed on HPC (shirokane supercomputer), these scripts could not directly run in your environment, but they can help you reproduce these experiments to some extends. The script named `hg002_generate_data.py` will help generate and download necessary HG002 reads and this data can be used for further analysis shown in sv scripts folder. LPMX and bare host use different commands to launch the analysis tools, so please be careful on the paths of data. 
+Date used inside the experiment:
+GRCh38: https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz  
+HG002: file `HG002_data_list`
+
+## GPGPU Guppy basecaller experiment
+The data used inside the GPGPU mode of Guppy basecaller is available from the file `NA12878-IVT-RNA_All.files.txt`
+
+## Raw experiment data file is `experiment_data.xlsx`
 
 ## Notice:
 All these experiment scripts are updated and available at [https://github.com/JasonYangShadow/experiment_attachments](https://github.com/JasonYangShadow/experiment_attachments), make sure receiving the latest version from the Github repository. 
